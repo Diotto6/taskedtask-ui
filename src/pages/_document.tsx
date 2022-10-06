@@ -38,17 +38,11 @@ export default class MyDocument extends Document {
   }
   render(): JSX.Element {
     return (
-      <Html lang="PT">
+      <Html lang="pt-br">
         <Head>
-          <meta charSet="utf-8" />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/favicons/favicon-ico"
-          />
-          <meta name="msapplication-TileColor" content="#ffffff" />
-          <meta name="theme-color" content="#ffffff" />
+          <meta charSet="UTF-8" />
+          <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
+          <meta name="apple-mobile-web-app-title" content="Bertic" />
         </Head>
         <body>
           <Main />

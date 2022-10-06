@@ -18,11 +18,11 @@ export const createSession = async ({ email, password }: UserTypeProps) => {
 //   return api.get(url);
 // };
 
-// export const createUser = async (email, password) => {
-//   let url = `/user`;
+export const createUser = async ({ email, password }: UserTypeProps) => {
+  let response = await axios.post("/user", { email, password });
 
-//   return api.post(url, { email, password });
-// };
+  return response.data;
+};
 
 // export const getMensagens = async (userId) => {
 //   let url = `/mensagens/${userId}`;

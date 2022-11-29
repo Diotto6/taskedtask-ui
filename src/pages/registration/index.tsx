@@ -1,115 +1,165 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import { useFormik } from "formik";
-import { userSchema } from "../../schemas";
-import { CreateUserType } from "../../types";
-import { createUser } from "../api/services/api";
+import {
+  Box,
+  Button,
+  CssBaseline,
+  Grid,
+  Paper,
+  TextField,
+  Link,
+  Typography,
+} from "@mui/material";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ThemeProvider } from "@mui/material/styles";
+import { createUserSchema } from "../../schemas";
+import { CreateUserTypeProps } from "../../types";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import path from "node:path/win32";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      Diotto Dev
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-const createUserDefault: CreateUserType = {
-  email: "",
-  password: "",
-};
-
-const theme = createTheme();
+import { motion } from "framer-motion";
+import { CircularProgress } from "@mui/material";
+import { usePostCreateUserMutation } from "../../redux/services/api";
+import { ReactNode } from "react";
+import Copyright from "../../components/Copyright";
+import theme from "../../styles/theme";
 
 export default function LoginPage() {
+  const [postCreateUser, { isLoading, isError }] = usePostCreateUserMutation();
+
   const router = useRouter();
-  const formik = useFormik({
-    initialValues: createUserDefault,
-    validationSchema: userSchema,
-    onSubmit: async (values) => {
-      const data = {
-        email: values.email,
-        password: values.password,
-      };
-      const response = await createUser(data);
-      if (response.ok) {
-        toast.dismiss();
-        toast.success(response.message);
-        setTimeout(() => {
-          router.push("/login");
-        }, 1000);
-      } else {
-        toast.dismiss();
-        toast.error(response.message);
-      }
-    },
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateUserTypeProps>({
+    resolver: yupResolver(createUserSchema),
   });
+
+  const onSubmit = async (result: CreateUserTypeProps) => {
+    const data = await postCreateUser(result).unwrap();
+    try {
+      if (data?.ok === true) {
+        toast.dismiss();
+        toast.success(data?.message);
+        setTimeout(
+          () =>
+            router.push({
+              pathname: "/login",
+            }),
+          2000
+        );
+      }
+      if (data?.ok === false) {
+        toast.dismiss();
+        toast.error(data?.message);
+      }
+      if (isError) {
+        toast.dismiss();
+        toast.error("Algo deu errado, tente novamente");
+      }
+    } catch (error) {
+      console.error("rejected", error);
+    }
+  };
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid container component="main">
         <CssBaseline />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid
+          height={"100vh"}
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage:
+              "url(https://cdn.wallpapersafari.com/25/40/iQLFe5.jpg)",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        ></Grid>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={6}
+          square
+          height={"100vh"}
+        >
           <Box
             sx={{
-              paddingTop: "8rem",
-              my: 8,
+              my: 4,
               mx: 4,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
             }}
           >
-            <Typography component="h1" variant="h5">
-              Cadastrar
-            </Typography>
-            <Box sx={{ mt: 1 }}>
-              <form onSubmit={formik.handleSubmit}>
+            <Box>
+              <motion.h2
+                animate={{
+                  translateX: [150, 0],
+                  rotate: [0, 270, 0],
+                }}
+                transition={{ duration: 2 }}
+              >
+                Cadastrar
+              </motion.h2>
+            </Box>
+            <Box>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <TextField
+                  margin="dense"
+                  fullWidth
+                  id="firstName"
+                  label="Nome"
+                  autoComplete="firstName"
+                  error={Boolean(errors.firstName)}
+                  {...register("firstName")}
+                  helperText={errors.firstName?.message as ReactNode}
+                />
+                <TextField
+                  margin="dense"
+                  fullWidth
+                  id="lastName"
+                  label="Sobrenome"
+                  autoComplete="lastName"
+                  error={Boolean(errors.lastName)}
+                  {...register("lastName")}
+                  helperText={errors.lastName?.message as ReactNode}
+                />
                 <TextField
                   margin="dense"
                   fullWidth
                   id="email"
                   label="Email"
-                  name="email"
                   autoComplete="email"
-                  autoFocus
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={formik.touched.email && formik.errors.email}
-                  value={formik.values.email}
+                  error={Boolean(errors.email)}
+                  {...register("email")}
+                  helperText={errors.email?.message as ReactNode}
                 />
                 <TextField
                   fullWidth
                   margin="dense"
-                  name="password"
                   label="Senha"
                   type="password"
                   id="password"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.password && Boolean(formik.errors.password)
-                  }
-                  helperText={formik.touched.password && formik.errors.password}
-                  value={formik.values.password}
+                  error={Boolean(errors.password)}
+                  {...register("password")}
+                  helperText={errors.password?.message as ReactNode}
+                />
+                <TextField
+                  fullWidth
+                  margin="dense"
+                  label="Confirme a Senha"
+                  type="password"
+                  id="passwordConfirm"
+                  error={Boolean(errors.passwordConfirm)}
+                  {...register("passwordConfirm")}
+                  helperText={errors.passwordConfirm?.message as ReactNode}
                 />
                 <Button
                   type="submit"
@@ -117,25 +167,28 @@ export default function LoginPage() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Continuar
+                  {!isLoading ? (
+                    <Typography>Cadastrar</Typography>
+                  ) : (
+                    <>
+                      <Typography pr={1}>Cadastrando</Typography>
+                      <Box pr={2} display="inline-flex">
+                        <CircularProgress size={17} color="info" />
+                      </Box>
+                    </>
+                  )}
                 </Button>
               </form>
               <Grid container>
                 <Grid item>
-                  <Link
-                    href="/login"
-                    variant="subtitle1"
-                    sx={{
-                      textDecoration: "none",
-                    }}
-                  >
+                  <Link href="/login" variant="subtitle1">
                     {"Já possui um cadastro? Entrar aqui."}
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
+          <Copyright />
         </Grid>
       </Grid>
     </ThemeProvider>

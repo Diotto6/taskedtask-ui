@@ -7,8 +7,6 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    background:${(props) => props.theme.colors.background};
-    color: ${(props) => props.theme.colors.text};
 }
 
 a {
@@ -24,9 +22,6 @@ a {
   html {
     color-scheme: dark;
   }
-  body {
-    background:${(props) => props.theme.colors.background};
-    color: ${(props) => props.theme.colors.text};;
-  }
+
 }
 `;

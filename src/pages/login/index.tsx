@@ -1,74 +1,104 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import Image from "next/image";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useFormik } from "formik";
-import { createSession } from "../api/services/api";
+import {
+  Button,
+  CssBaseline,
+  TextField,
+  Link,
+  Paper,
+  Box,
+  Grid,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import { ReactNode, useEffect } from "react";
+import { motion } from "framer-motion";
 import { userSchema } from "../../schemas";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      Diotto Dev
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-const ImageData = () => (
-  <div className="grid-element">
-    <Image src="" layout="fixed" height={"980px"} width={"940px"} alt="" />
-  </div>
-);
-
-const theme = createTheme();
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { usePostUserMutation } from "../../redux/services/api";
+import { UserTypeProps } from "../../types";
+import { useDispatch } from "react-redux";
+import { setToken } from "../../redux/features/authSlice";
+import { setCookie } from "nookies";
+import Copyright from "../../components/Copyright";
+import theme from "../../styles/theme";
 
 export default function LoginPage() {
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    onSubmit: (values: any) => {
-      const data = {
-        email: values.email,
-        password: values.password,
-      };
-      return createSession(data).then((response) => {
-        localStorage.setItem("token", `${response.token}`);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [postUser, { isLoading, isError }] = usePostUserMutation();
 
-        console.log(response);
-      });
-    },
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserTypeProps>({
+    resolver: yupResolver(userSchema),
   });
+
+  const onSubmit = async (result: UserTypeProps) => {
+    try {
+      const data = await postUser(result).unwrap();
+
+      if (data?.ok === true) {
+        toast.dismiss();
+        toast.success(data?.message);
+        dispatch(setToken({ token: data.token }));
+        setCookie(null, "token", data.token, {
+          maxAge: 86400,
+          path: `/messages/${data.user.id}`,
+        });
+        setCookie(null, "userId", data.user.id, {
+          maxAge: 86400,
+          path: `/messages/${data.user.id}`,
+        });
+        setCookie(
+          null,
+          "name",
+          data.user.firstName + " " + data.user.lastName,
+          {
+            maxAge: 86400,
+            path: `/messages/${data.user.id}`,
+          }
+        );
+        setTimeout(() => {
+          router.push({
+            pathname: `/messages/${data.user.id}`,
+          });
+        }, 2000);
+        if (data?.ok === false) {
+          toast.dismiss();
+          toast.error(data?.message);
+        }
+        if (isError) {
+          toast.dismiss();
+          toast.error("Algo deu errado, tente novamente");
+        }
+      }
+    } catch (error) {
+      console.error("rejected", error);
+    }
+  };
 
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
-        <Grid item xs={false} sm={4} md={7}>
-          <ImageData />
-        </Grid>
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={5}
+          component={Paper}
+          elevation={3}
+          square
+          sx={{ height: "100%" }}
+        >
           <Box
             sx={{
-              paddingTop: "8rem",
               my: 8,
               mx: 4,
               display: "flex",
@@ -76,38 +106,43 @@ export default function LoginPage() {
               alignItems: "center",
             }}
           >
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
+            <Box>
+              <motion.h2
+                animate={{
+                  translateY: [-150, 0],
+                  rotateX: [0, 270, 0],
+                  scale: [3, 1],
+                }}
+                transition={{ duration: 2 }}
+              >
+                Entrar
+              </motion.h2>
+            </Box>
             <Box sx={{ mt: 1 }}>
-              <form onSubmit={formik.handleSubmit}>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                style={{ maxWidth: "500px" }}
+              >
                 <TextField
-                  margin="normal"
-                  required
+                  margin="dense"
                   fullWidth
                   id="email"
-                  label="Email Address"
-                  name="email"
+                  label="Email"
                   autoComplete="email"
                   autoFocus
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
+                  error={Boolean(errors.email)}
+                  {...register("email")}
+                  helperText={errors.email?.message as ReactNode}
                 />
                 <TextField
-                  margin="normal"
-                  required
                   fullWidth
-                  name="password"
-                  label="Password"
+                  margin="dense"
+                  label="Senha"
                   type="password"
                   id="password"
-                  autoComplete="current-password"
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
-                />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
+                  error={Boolean(errors.password)}
+                  {...register("password")}
+                  helperText={errors.password?.message as ReactNode}
                 />
                 <Button
                   type="submit"
@@ -115,25 +150,39 @@ export default function LoginPage() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In
+                  {isLoading ? (
+                    <>
+                      <Typography pr={1}>Entrando</Typography>
+                      <Box display="inline-flex">
+                        <CircularProgress size={17} color="info" />
+                      </Box>
+                    </>
+                  ) : (
+                    <Typography>Entrar</Typography>
+                  )}
                 </Button>
               </form>
               <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
+                <Link href="/registration" variant="subtitle1">
+                  {"Não possui uma conta? Cadastre-se"}
+                </Link>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
+          <Copyright sx={{ mt: "25%" }} />
         </Grid>
+        <Grid
+          item
+          xs={false}
+          sm={6}
+          md={7}
+          sx={{
+            backgroundImage:
+              "url(https://getwallpapers.com/wallpaper/full/8/4/8/82583.jpg)",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        ></Grid>
       </Grid>
     </ThemeProvider>
   );

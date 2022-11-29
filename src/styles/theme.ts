@@ -1,9 +1,27 @@
-const theme = {
-  colors: {
-    background: "#121214",
-    text: "#FFF6F6F6",
-    primary: "#FFC6C6C6",
+import { createTheme } from "@mui/material";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#000",
+    },
+    secondary: {
+      main: "#333",
+    },
+    info: {
+      main: "#fdfdfd",
+    },
+    error: {
+      main: "#E81B17",
+    },
   },
-};
+
+  typography: {
+    h5: {
+      fontWeight: "500",
+    },
+    fontFamily: `system-ui`,
+  },
+});
 
 export default theme;

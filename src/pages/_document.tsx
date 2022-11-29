@@ -8,7 +8,7 @@ import Document, {
 } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 
-export default class MyDocument extends Document {
+export default class TaskedUiDocument extends Document {
   static async getInitialProps(
     ctx: DocumentContext
   ): Promise<DocumentInitialProps> {
@@ -38,11 +38,11 @@ export default class MyDocument extends Document {
   }
   render(): JSX.Element {
     return (
-      <Html lang="pt-br">
+      <Html lang="PT-BR">
         <Head>
           <meta charSet="UTF-8" />
           <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-          <meta name="apple-mobile-web-app-title" content="Bertic" />
+          <meta name="web-app-title" content="Tasked" />
         </Head>
         <body>
           <Main />

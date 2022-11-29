@@ -1,17 +1,26 @@
-import GlobalStyle from "../styles/global";
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import theme from "../styles/theme";
-
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import theme from "../styles/theme";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <ToastContainer />
-      <Component {...pageProps} />
-      <GlobalStyle />
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        closeOnClick={true}
+        pauseOnHover={true}
+        draggable={false}
+        theme="dark"
+      />
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
     </ThemeProvider>
   );
 }

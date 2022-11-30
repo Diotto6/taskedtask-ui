@@ -1,4 +1,4 @@
-import { Close } from "@mui/icons-material";
+import Close from "@mui/icons-material/Close";
 import {
   DialogTitle,
   IconButton,
@@ -11,8 +11,6 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { useDestroyMessagesMutation } from "../redux/services/api";
-
-import { messageSchema } from "../schemas";
 import type { MessagesTypeProps } from "../types";
 
 type DialogProps = {

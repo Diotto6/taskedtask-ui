@@ -16,7 +16,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         closeOnClick={true}
         pauseOnHover={true}
         draggable={false}
-        theme="dark"
+        theme="colored"
+        style={{
+          color: "#0E131F",
+          borderRadius: "10px",
+        }}
       />
       <Provider store={store}>
         <Component {...pageProps} />

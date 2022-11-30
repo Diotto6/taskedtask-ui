@@ -3,19 +3,30 @@ import { createTheme } from "@mui/material";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#000",
+      main: "#0E131F",
+    },
+    success: {
+      main: "#38405F",
     },
     secondary: {
-      main: "#333",
+      main: "#8B939C",
     },
     info: {
-      main: "#fdfdfd",
+      main: "#59546C",
     },
     error: {
-      main: "#E81B17",
+      main: "#C41538",
     },
   },
-
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        contained: {
+          borderRadius: "11px",
+        },
+      },
+    },
+  },
   typography: {
     h5: {
       fontWeight: "500",

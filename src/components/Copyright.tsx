@@ -13,6 +13,7 @@ function Copyright(props: CopyrightProps) {
       variant="body2"
       color="text.secondary"
       align="center"
+      p={1}
       {...props}
     >
       {"Copyright © "}

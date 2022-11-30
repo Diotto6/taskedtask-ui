@@ -20,7 +20,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import type { MouseEvent } from "react";
 import { ExitToApp } from "@mui/icons-material";
 import { destroyCookie, parseCookies } from "nookies";
@@ -32,15 +32,14 @@ import { useForm } from "react-hook-form";
 import { messageSchema } from "../../schemas";
 import { MessagesTypeProps } from "../../types";
 import {
-  useDestroyMessagesMutation,
   useGetMessagesRefetchMutation,
   usePostMessagesMutation,
 } from "../../redux/services/api";
 import { useAppDispatch } from "../../hooks/store";
 import theme from "../../styles/theme";
-import Copyright from "../../components/Copyright";
 import MessageDialog from "../../components/MessageDialog";
 import { titleize } from "../../utils/titleize";
+import MessageDialogDelete from "../../components/DialogDelete";
 
 type USER_DICE = {
   user: {
@@ -75,8 +74,6 @@ export default function ErrandPage({ ...props }: USER_DICE) {
 
   const [postMessages] = usePostMessagesMutation();
 
-  const [destroyMessages] = useDestroyMessagesMutation();
-
   const {
     register,
     handleSubmit,
@@ -109,27 +106,8 @@ export default function ErrandPage({ ...props }: USER_DICE) {
     setAnchorEl(null);
   };
 
+  const [openDialogDelete, setOpenDialogDelete] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-
-  function destroyMessage(arg: MessagesTypeProps) {
-    destroyMessages(arg);
-    getMessagesRefetch(userId);
-  }
-  const color = [
-    "red",
-    "yellow",
-    "white",
-    "orange",
-    "blue",
-    "green",
-    "pink",
-    "purple",
-    "cyan",
-  ];
-
-  const backColor = Math.floor(Math.random() * color.length);
-
-  console.log(color[backColor]);
 
   return (
     <>
@@ -137,15 +115,18 @@ export default function ErrandPage({ ...props }: USER_DICE) {
         {isSuccess ? (
           <Grid
             container
-            component="header"
+            component="main"
             sx={{
               display: "flex",
               flexDirection: "column",
-              backgroundColor: "white",
+              height: "100vh",
             }}
           >
             <CssBaseline />
-            <Grid container sx={{ display: "flex", backgroundColor: "black" }}>
+            <Grid
+              container
+              sx={{ display: "flex", backgroundColor: "#0E131F" }}
+            >
               <Grid
                 container
                 sx={{
@@ -156,22 +137,46 @@ export default function ErrandPage({ ...props }: USER_DICE) {
                   justifyContent: "space-between",
                 }}
               >
-                <Grid pl="1rem">
-                  <Typography variant="h6">
-                    Seus recados {titleize(firstName + " " + lastName)}
-                  </Typography>
+                <Grid
+                  item
+                  sx={{
+                    pl: "1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  <Box>
+                    <svg
+                      width={28}
+                      height={28}
+                      viewBox="0 0 440 640"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M17.7 332.3h412.7v22c0 37.7-29.3 68-65.3 68h-19L259.3 512v-89.7H83c-36 0-65.3-30.3-65.3-68v-22zm0-23.6h412.7v-85H17.7v85zm0-109.4h412.7v-85H17.7v85zM365 0H83C47 0 17.7 30.3 17.7 67.7V90h412.7V67.7C430.3 30.3 401 0 365 0z"
+                        fill="#fdfafa"
+                      />
+                    </svg>
+                  </Box>
+                  <Box pb={1}>
+                    <Typography variant="h6">
+                      Seus recados {titleize(firstName + " " + lastName)}
+                    </Typography>
+                  </Box>
                 </Grid>
                 <Grid pr="3rem">
                   <Box
                     sx={{
-                      backgroundColor: color[backColor],
                       borderRadius: "50%",
                     }}
                   >
-                    <IconButton onClick={handleClick} size="small">
-                      <Typography color="white">
-                        {firstLetter + lastletter}
-                      </Typography>
+                    <IconButton
+                      color="success"
+                      onClick={handleClick}
+                      size="small"
+                    >
+                      <Avatar />
                     </IconButton>
                   </Box>
                   <Menu
@@ -196,7 +201,9 @@ export default function ErrandPage({ ...props }: USER_DICE) {
                       }}
                     >
                       <ExitToApp />
-                      <Typography variant="subtitle2"> Sair </Typography>
+                      <Typography sx={{ pl: 1 }} variant="subtitle2">
+                        Sair do APP
+                      </Typography>
                     </Button>
                   </Menu>
                 </Grid>
@@ -266,12 +273,26 @@ export default function ErrandPage({ ...props }: USER_DICE) {
                       <TableContainer component={Card}>
                         <Table>
                           <TableHead>
-                            <TableRow sx={{ backgroundColor: "#c4c2c2" }}>
+                            <TableRow sx={{ backgroundColor: "#8B939C" }}>
                               <TableCell>
-                                <Typography variant="h6">Recados </Typography>
+                                <Typography
+                                  fontSize="18px"
+                                  variant="button"
+                                  fontWeight="500"
+                                  fontStyle="oblique"
+                                >
+                                  Recados
+                                </Typography>
                               </TableCell>
                               <TableCell align="center">
-                                <Typography variant="h6">Ações</Typography>
+                                <Typography
+                                  fontSize="18px"
+                                  variant="button"
+                                  fontWeight="500"
+                                  fontStyle="oblique"
+                                >
+                                  Ações
+                                </Typography>
                               </TableCell>
                             </TableRow>
                           </TableHead>
@@ -311,9 +332,7 @@ export default function ErrandPage({ ...props }: USER_DICE) {
                                           color="secondary"
                                           onClick={() => {
                                             setOpenDialog(true);
-                                            console.log(e);
                                             setDice(e);
-                                            console.log(openDialog);
                                           }}
                                         >
                                           <Typography variant="body2">
@@ -326,7 +345,10 @@ export default function ErrandPage({ ...props }: USER_DICE) {
                                           variant="contained"
                                           type="submit"
                                           color="error"
-                                          onClick={() => destroyMessage(e)}
+                                          onClick={() => {
+                                            setOpenDialogDelete(true);
+                                            setDice(e);
+                                          }}
                                         >
                                           <Typography variant="body2">
                                             Deletar
@@ -335,6 +357,14 @@ export default function ErrandPage({ ...props }: USER_DICE) {
                                       </Box>
                                     </TableCell>
                                   </TableRow>
+                                  <MessageDialogDelete
+                                    onClose={() => {
+                                      setOpenDialogDelete(false);
+                                    }}
+                                    refetch={() => getMessagesRefetch(e.userId)}
+                                    open={openDialogDelete}
+                                    arg={dice !== undefined ? dice : e}
+                                  />
                                   <MessageDialog
                                     onClose={() => {
                                       setOpenDialog(false);
@@ -354,7 +384,6 @@ export default function ErrandPage({ ...props }: USER_DICE) {
                     <Typography variant="h6">Não há recados...</Typography>
                   )}
                 </Grid>
-                <Copyright sx={{ mt: 10 }} />
               </>
             ) : null}
           </Grid>

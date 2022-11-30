@@ -8,6 +8,7 @@ import {
   DialogActions,
   Button,
   Dialog,
+  Box,
 } from "@mui/material";
 import { ReactNode, useEffect } from "react";
 import { FieldValue, useForm } from "react-hook-form";
@@ -52,18 +53,30 @@ export default function MessageDialog({
   const onSubmit = async (data: { message: string }) => {
     const { message } = data;
     const { id, userId } = arg;
-    const msg = await putMessages({ id, message, userId }).unwrap();
 
-    toast.dismiss();
-    toast.success(msg.message);
-    reset({ message: "" });
-    onClose();
-    refetch();
+    await putMessages({ id, message, userId })
+      .unwrap()
+      .then((msg) => {
+        if (msg.ok) {
+          toast.dismiss();
+          toast.success(msg.message);
+          reset({ message: "" });
+          onClose();
+          refetch();
+        } else {
+          toast.dismiss();
+          toast.error(msg.message);
+          refetch();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
-    <Dialog open={open} fullWidth maxWidth="lg">
-      <DialogTitle width={"calc(100% - 40px)"} noWrap>
+    <Dialog open={open} fullWidth>
+      <DialogTitle noWrap>
         Editar Recado
         <IconButton
           aria-label="close"
@@ -84,25 +97,26 @@ export default function MessageDialog({
         <form onSubmit={handleSubmit(onSubmit as FieldValue<any>)}>
           <TextField
             fullWidth
-            required
             id="message"
-            variant="outlined"
+            variant="standard"
             label="Edite seu recado"
             error={Boolean(errors.message)}
             {...register("message")}
             helperText={errors.message?.message as ReactNode}
           />
 
-          <DialogActions>
-            <Button
-              onClick={() => {
-                reset({ message: "" });
-                onClose();
-              }}
-              color="error"
-            >
-              Cancelar
-            </Button>
+          <DialogActions sx={{ pt: 2 }}>
+            <Box pr={2}>
+              <Button
+                onClick={() => {
+                  reset({ message: "" });
+                  onClose();
+                }}
+                color="error"
+              >
+                Cancelar
+              </Button>
+            </Box>
             <Button variant="contained" type="submit" color="secondary">
               {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>

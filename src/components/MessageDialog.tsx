@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Close } from "@mui/icons-material";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
   DialogTitle,
   IconButton,
@@ -90,7 +90,7 @@ export default function MessageDialog({
             top: 8,
           }}
         >
-          <Close />
+          <HighlightOffIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>

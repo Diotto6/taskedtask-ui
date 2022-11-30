@@ -1,4 +1,4 @@
-import Close from "@mui/icons-material/Close";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
   DialogTitle,
   IconButton,
@@ -62,7 +62,7 @@ export default function MessageDialogDelete({
             top: 8,
           }}
         >
-          <Close />
+          <HighlightOffIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>

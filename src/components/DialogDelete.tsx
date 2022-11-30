@@ -1,7 +1,7 @@
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { Close } from "@mui/icons-material";
 import {
   DialogTitle,
-  IconButton,
+  Icon,
   DialogContent,
   DialogActions,
   Button,
@@ -51,7 +51,7 @@ export default function MessageDialogDelete({
     <Dialog open={open} fullWidth>
       <DialogTitle noWrap>
         Deletar Recado
-        <IconButton
+        <Icon
           aria-label="close"
           onClick={() => {
             onClose();
@@ -62,8 +62,8 @@ export default function MessageDialogDelete({
             top: 8,
           }}
         >
-          <HighlightOffIcon />
-        </IconButton>
+          <Close />
+        </Icon>
       </DialogTitle>
       <DialogContent>
         <Box display="flex">

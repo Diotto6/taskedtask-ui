@@ -1,14 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { Close } from "@mui/icons-material";
 import {
   DialogTitle,
-  IconButton,
   DialogContent,
   TextField,
   DialogActions,
   Button,
   Dialog,
   Box,
+  Icon,
 } from "@mui/material";
 import { ReactNode, useEffect } from "react";
 import { FieldValue, useForm } from "react-hook-form";
@@ -78,7 +78,7 @@ export default function MessageDialog({
     <Dialog open={open} fullWidth>
       <DialogTitle noWrap>
         Editar Recado
-        <IconButton
+        <Icon
           aria-label="close"
           onClick={() => {
             onClose();
@@ -90,8 +90,8 @@ export default function MessageDialog({
             top: 8,
           }}
         >
-          <HighlightOffIcon />
-        </IconButton>
+          <Close />
+        </Icon>
       </DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit as FieldValue<any>)}>

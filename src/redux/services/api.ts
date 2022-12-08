@@ -12,12 +12,10 @@ export const Api = createApi({
     prepareHeaders: (headers, { getState }) => {
       // By default, if we have a token in the store, let's use that for authenticated requests
       const token = (getState() as RootState).auth.token;
-      console.log(token);
 
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
-      console.log(headers);
 
       return headers;
     },
@@ -47,9 +45,6 @@ export const Api = createApi({
     getUser: build.query<any, void>({
       query: () => "user",
       keepUnusedDataFor: 5,
-    }),
-    getMessages: build.query({
-      query: (userId) => `messages/${userId}`,
     }),
     getMessagesRefetch: build.mutation({
       query: (arg: string) => {
@@ -93,7 +88,6 @@ export const {
   usePostCreateUserMutation,
   usePostUserMutation,
   useGetUserQuery,
-  useGetMessagesQuery,
   useDestroyMessagesMutation,
   usePostMessagesMutation,
   usePutMessagesMutation,

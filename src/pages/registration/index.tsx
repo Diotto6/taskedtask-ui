@@ -3,11 +3,9 @@ import {
   Button,
   CssBaseline,
   Grid,
-  Paper,
   TextField,
   Link,
   Typography,
-  Divider,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -75,15 +73,16 @@ export default function LoginPage() {
           md={6}
           sx={{
             display: { sm: "none", md: "flex", xs: "none" },
-            alignItems: "center",
           }}
         >
           <Image src={TaskBro} alt="Gif of add Task" />
         </Grid>
         <Grid
           item
-          xs={4}
-          md={5.5}
+          xs={13}
+          sm={12}
+          md={5}
+          lg={6}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -121,13 +120,13 @@ export default function LoginPage() {
               </svg>
             </motion.h2>
           </Box>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: "450px" }}>
             <TextField
               margin="dense"
               fullWidth
               id="firstName"
-              label="Nome"
-              autoComplete="firstName"
+              label="NOME"
+              variant="standard"
               error={Boolean(errors.firstName)}
               {...register("firstName")}
               helperText={errors.firstName?.message as ReactNode}
@@ -136,8 +135,8 @@ export default function LoginPage() {
               margin="dense"
               fullWidth
               id="lastName"
-              label="Sobrenome"
-              autoComplete="lastName"
+              label="SOBRENOME"
+              variant="standard"
               error={Boolean(errors.lastName)}
               {...register("lastName")}
               helperText={errors.lastName?.message as ReactNode}
@@ -146,8 +145,8 @@ export default function LoginPage() {
               margin="dense"
               fullWidth
               id="email"
-              label="Email"
-              autoComplete="email"
+              label="E-MAIL"
+              variant="standard"
               error={Boolean(errors.email)}
               {...register("email")}
               helperText={errors.email?.message as ReactNode}
@@ -155,9 +154,10 @@ export default function LoginPage() {
             <TextField
               fullWidth
               margin="dense"
-              label="Senha"
+              label="SENHA"
               type="password"
               id="password"
+              variant="standard"
               error={Boolean(errors.password)}
               {...register("password")}
               helperText={errors.password?.message as ReactNode}
@@ -165,9 +165,10 @@ export default function LoginPage() {
             <TextField
               fullWidth
               margin="dense"
-              label="Confirme a Senha"
+              label="CONFIRME A SENHA"
               type="password"
               id="passwordConfirm"
+              variant="standard"
               error={Boolean(errors.passwordConfirm)}
               {...register("passwordConfirm")}
               helperText={errors.passwordConfirm?.message as ReactNode}
@@ -200,18 +201,27 @@ export default function LoginPage() {
           item
           width="100vw"
           display="flex"
-          alignItems="end"
+          alignItems="center"
           justifyContent="flex-start"
-          flexDirection="column"
           component="footer"
-          mr={8}
+          sx={{
+            flexDirection: { xs: "column", sm: "row", md: "row" },
+          }}
         >
-          <Copyright />
-          <Box display="flex" alignItems="end" justifyContent="flex-start">
-            <Typography variant="subtitle1">Contatos</Typography>
-            <Divider />
-          </Box>
-          <Box display="flex" alignItems="end" justifyContent="flex-start">
+          <Copyright
+            sx={{
+              paddingLeft: { xs: "0px", sm: "8em", md: "8em" },
+              paddingTop: "10em",
+            }}
+          />
+          <Box
+            sx={{
+              paddingTop: { xs: "0px", sm: "8em", md: "8em" },
+            }}
+            display="flex"
+            alignItems="end"
+            justifyContent="flex-start"
+          >
             <a href="https://www.instagram.com/nicodiotto/">
               <svg
                 className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 cursor-pointer"

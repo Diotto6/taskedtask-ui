@@ -1,3 +1,4 @@
+import { CssBaseline } from "@mui/material";
 import Document, {
   DocumentContext,
   DocumentInitialProps,
@@ -45,6 +46,7 @@ export default class TaskedUiDocument extends Document {
           <meta name="web-app-title" content="Tasked" />
         </Head>
         <body>
+          <CssBaseline />
           <Main />
           <NextScript />
         </body>

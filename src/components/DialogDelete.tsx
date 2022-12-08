@@ -34,13 +34,13 @@ export default function MessageDialogDelete({
       .unwrap()
       .then((payload) => {
         if (payload.ok) {
-          toast.dismiss();
-          toast.success(payload.message);
-          onClose();
-          refetch();
+          toast.error("Recado deletado com sucesso!");
+          setTimeout(() => {
+            onClose();
+            refetch();
+          }, 450);
         } else {
-          toast.dismiss();
-          toast.error(payload.message);
+          toast.error("Ops.. algo deu errado, tente novamente");
           refetch();
         }
       })
@@ -48,7 +48,7 @@ export default function MessageDialogDelete({
   }
 
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open={open} fullWidth maxWidth="md">
       <DialogTitle noWrap>
         Deletar Recado
         <Icon

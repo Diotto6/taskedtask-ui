@@ -31,7 +31,6 @@ export default function MessageDialog({
   onClose,
 }: DialogProps) {
   const { message } = arg;
-  console.log(message);
 
   const {
     register,
@@ -58,14 +57,14 @@ export default function MessageDialog({
       .unwrap()
       .then((msg) => {
         if (msg.ok) {
-          toast.dismiss();
-          toast.success(msg.message);
+          toast.success("Recado alterado com sucesso!");
           reset({ message: "" });
-          onClose();
-          refetch();
+          setTimeout(() => {
+            onClose();
+            refetch();
+          }, 450);
         } else {
-          toast.dismiss();
-          toast.error(msg.message);
+          toast.error("Ops.. algo deu errado, tente novamente");
           refetch();
         }
       })
@@ -75,7 +74,7 @@ export default function MessageDialog({
   };
 
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open={open} fullWidth maxWidth="md">
       <DialogTitle noWrap>
         Editar Recado
         <Icon

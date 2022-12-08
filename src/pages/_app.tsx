@@ -10,6 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer
+        toastStyle={{ backgroundColor: "#0E131F", borderRadius: "10px" }}
         position="top-center"
         autoClose={2000}
         hideProgressBar={false}
@@ -17,10 +18,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         pauseOnHover={true}
         draggable={false}
         theme="colored"
-        style={{
-          color: "#0E131F",
-          borderRadius: "10px",
-        }}
       />
       <Provider store={store}>
         <Component {...pageProps} />

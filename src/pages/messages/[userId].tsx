@@ -341,7 +341,9 @@ export default function ErrandPage({ ...props }: USER_DICE) {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const userId = ctx.params?.userId as string;
-  const res = await fetch(`http://localhost:9009/messages/${userId}`);
+  const res = await fetch(
+    `https://taskedtas-api.onrender.com/messages/${userId}`
+  );
   const data = await res.json();
   const userCookies = parseCookies(ctx);
 

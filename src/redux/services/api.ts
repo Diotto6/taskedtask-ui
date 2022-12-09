@@ -8,7 +8,7 @@ import { RootState } from "../store";
 
 export const Api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:9009/",
+    baseUrl: "https://taskedtas-api.onrender.com/",
     prepareHeaders: (headers, { getState }) => {
       // By default, if we have a token in the store, let's use that for authenticated requests
       const token = (getState() as RootState).auth.token;

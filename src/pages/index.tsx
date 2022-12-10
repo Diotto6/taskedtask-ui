@@ -73,7 +73,7 @@ export default function Home() {
         </Grid>
         <Grid container height="80vh" component="main">
           <Box
-            width="50vw"
+            width="48vw"
             display="flex"
             alignItems="center"
             pl={20}
@@ -127,6 +127,7 @@ export default function Home() {
             alignItems="center"
             justifyContent="start"
             sx={{
+              width: "50vw",
               display: { sm: "none", md: "flex", xs: "none" },
             }}
           >

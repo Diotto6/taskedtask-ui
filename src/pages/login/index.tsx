@@ -93,8 +93,12 @@ export default function LoginPage() {
           justifyContent="center"
           flexDirection="column"
         >
-          <Box
-            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
             <Typography
               fontSize="24px"
@@ -115,7 +119,7 @@ export default function LoginPage() {
                 fill="#131212"
               />
             </svg>
-          </Box>
+          </div>
 
           <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: "450px" }}>
             <TextField
@@ -148,19 +152,19 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Typography pr={1}>Entrando</Typography>
-                  <Box display="inline-flex">
+                  <div>
                     <CircularProgress size={17} color="info" />
-                  </Box>
+                  </div>
                 </>
               ) : (
                 <Typography>Entrar</Typography>
               )}
             </Button>
-            <Grid item>
+            <div>
               <Link href="/registration" variant="subtitle1">
                 {"Não possui uma conta? Cadastre-se"}
               </Link>
-            </Grid>
+            </div>
           </form>
         </Grid>
         <Grid
